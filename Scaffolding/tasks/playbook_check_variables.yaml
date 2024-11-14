@@ -1,0 +1,70 @@
+---
+- name: "Check if local_user is defined"
+  assert:
+    that:
+      - local_user is defined
+    fail_msg: "The 'local_user' variable is not defined in variables.yaml."
+    success_msg: "The 'local_user' variable is defined."
+
+- name: "Check if cloud_user is defined"
+  assert:
+    that:
+      - cloud_user is defined
+    fail_msg: "The 'cloud_user' variable is not defined in variables.yaml."
+    success_msg: "The 'cloud_user' variable is defined."
+
+- name: "Check if cloud_name is defined"
+  assert:
+    that:
+      - cloud_name is defined
+    fail_msg: "The 'cloud_name' variable is not defined in variables.yaml."
+    success_msg: "The 'cloud_name' variable is defined."
+
+- name: "Check if ssh_key_name is defined"
+  assert:
+    that:
+      - ssh_key_name is defined
+    fail_msg: "The 'ssh_key_name' variable is not defined in variables.yaml."
+    success_msg: "The 'ssh_key_name' variable is defined."
+
+- name: "Check if vm_name_prefix is defined"
+  assert:
+    that:
+      - vm_name_prefix is defined
+    fail_msg: "The 'vm_name_prefix' variable is not defined in variables.yaml."
+    success_msg: "The 'vm_name_prefix' variable is defined."
+
+- name: "Check if image_name is defined"
+  assert:
+    that:
+      - image_name is defined
+    fail_msg: "The 'image_name' variable is not defined in variables.yaml."
+    success_msg: "The 'image_name' variable is defined."
+
+- name: "Check if vm_flavor is defined"
+  assert:
+    that:
+      - vm_flavor is defined
+    fail_msg: "The 'vm_flavor' variable is not defined in variables.yaml."
+    success_msg: "The 'vm_flavor' variable is defined."
+
+- name: "Check if network_name is defined"
+  assert:
+    that:
+      - network_name is defined
+    fail_msg: "The 'network_name' variable is not defined in variables.yaml."
+    success_msg: "The 'network_name' variable is defined."
+
+- name: "Check if security_groups is defined"
+  assert:
+    that:
+      - security_groups is defined
+    fail_msg: "The 'security_groups' variable is not defined in variables.yaml."
+    success_msg: "The 'security_groups' variable is defined."
+
+- name: "Check if num_vms is defined"
+  assert:
+    that:
+      - num_vms is defined
+    fail_msg: "The 'num_vms' variable is not defined in variables.yaml."
+    success_msg: "The 'num_vms' variable is defined."

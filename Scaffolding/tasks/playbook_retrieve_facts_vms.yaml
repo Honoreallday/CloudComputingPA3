@@ -1,0 +1,39 @@
+---
+- name: Wait for VMs to initialize
+  ansible.builtin.pause:
+    seconds: 120
+
+- name: Retrieve information about all servers from OpenStack
+  openstack.cloud.server_info:
+    cloud: CH-822922
+  register: server_info
+
+- name: Filter VMs created by only us
+  set_fact:
+    created_vm_list: "{{ server_info.servers | selectattr('name', 'search', vm_name_prefix) | list }}"
+
+- name: Extract private IPs of VMs
+  vars:
+    private_ip: "{{ item.addresses.values() | map('selectattr', 'OS-EXT-IPS:type', 'equalto', 'fixed') | sum(start=[]) | map(attribute='addr') | first }}"
+  loop: "{{ created_vm_list }}"
+  when: private_ip is not none
+  set_fact:
+    vm_private_ips: "{{ vm_private_ips | default([]) + [private_ip] }}"
+
+- name: Prepare IPs to append to Inventory
+  set_fact:
+    ip_content: |
+      {% for ip in vm_private_ips %}
+      {{ ip }}
+      {% endfor %}
+
+- name: Append IPs to Inventory file
+  lineinfile:
+    path: "{{ inventory_file }}"
+    line: "{{ item }}"
+    create: yes
+    insertafter: EOF
+  loop: "{{ ip_content.splitlines() }}"
+
+- name: Refresh inventory to ensure new instances exist in inventory
+  ansible.builtin.meta: refresh_inventory

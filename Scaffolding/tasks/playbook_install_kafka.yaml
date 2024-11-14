@@ -1,0 +1,12 @@
+---
+- name: "Copy Kafka tarball to the cloud VMs"
+  copy:
+    src: "{{ kafka_path }}"
+    dest: /tmp/kafka_2.13-2.8.0.tgz
+
+- name: "Extract Kafka on the cloud VMs"
+  unarchive:
+    src: /tmp/kafka_2.13-2.8.0.tgz
+    dest: /opt/
+    remote_src: yes
+  become: true

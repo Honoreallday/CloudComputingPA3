@@ -1,0 +1,10 @@
+---
+- name: "Open necessary firewall ports"
+  firewalld:
+    port: "{{ item }}"
+    permanent: true
+    state: enabled
+  loop:
+    - 9092/tcp  # Kafka port
+    - 22/tcp    # SSH port
+  ignore_errors: yes
