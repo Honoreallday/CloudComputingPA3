@@ -1,0 +1,3 @@
+tensorflow
+kafka-python
+opencv-python
