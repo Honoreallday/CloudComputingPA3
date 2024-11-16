@@ -10,7 +10,7 @@ import os
 
 (train_images, train_labels), (test_images, test_labels) = cifar10.load_data()
 
-kafka_broker_ip = "192.168.5.90"
+kafka_broker_ip = "192.168.5.7"
 print(F"THIS IS THE KAFKA IP: {kafka_broker_ip}")
 producer = KafkaProducer(bootstrap_servers=f'{kafka_broker_ip}:9092',
                          value_serializer=lambda v: json.dumps(v).encode('utf-8'))
