@@ -7,7 +7,7 @@ mongo_client = MongoClient('mongodb://localhost:27017/')
 db = mongo_client['images']
 collection = db['image-data']
 
-kafka_broker_ip = os.environ.get("KAFKA_IP")
+kafka_broker_ip = "192.168.5.45"
 topic_name = 'image-topic'
 
 consumer = KafkaConsumer(
