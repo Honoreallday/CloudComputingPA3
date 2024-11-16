@@ -1025,7 +1025,7 @@ transform = transforms.Compose([
     transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
 ])
 
-kafka_broker_ip = os.environ.get("KAFKA_IP")
+kafka_broker_ip = os.environ.get("192.168.5.90")
 topic_name = 'image-topic'
 
 consumer = KafkaConsumer(
