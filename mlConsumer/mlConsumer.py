@@ -1010,7 +1010,7 @@ resNet50encoding = ["tench",
 
 mongodb_ip = os.environ.get("MONGO_IP")
 
-mongo_client = MongoClient('mongodb://192.168.5.136:27017/')
+mongo_client = MongoClient('mongodb://192.168.5.229:27017/')
 db = mongo_client['images']
 collection = db['image-data']
 
@@ -1025,7 +1025,7 @@ transform = transforms.Compose([
     transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
 ])
 
-kafka_broker_ip = os.environ.get("192.168.5.90")
+kafka_broker_ip = os.environ.get("192.168.5.45")
 topic_name = 'image-topic'
 
 consumer = KafkaConsumer(
