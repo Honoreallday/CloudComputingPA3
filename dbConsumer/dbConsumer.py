@@ -3,7 +3,7 @@ import json
 import os
 from pymongo import MongoClient
 
-mongo_client = MongoClient('mongodb://localhost:27017/')
+mongo_client = MongoClient('mongodb://192.168.5.229:27017/')
 db = mongo_client['images']
 collection = db['image-data']
 
