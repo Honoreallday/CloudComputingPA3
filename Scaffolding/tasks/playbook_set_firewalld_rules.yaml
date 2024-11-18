@@ -7,4 +7,28 @@
   loop:
     - 9092/tcp  # Kafka port
     - 22/tcp    # SSH port
+    - 6443/tcp       # Kubernetes API server
+    - 2379-2380/tcp  # etcd server vlient API
+    - 10250/tcp      # kublet API
   ignore_errors: yes
+ 
+- name: Stop and disable firewalld
+  systemd:
+    name: firewalld
+    state: stopped
+    enabled: no
+
+- name: Disable ufw
+  shell: ufw disable     # this almost always produces error cuz ufw isn't installed on vm. But we only run this to disable
+  ignore_errors: yes     # ufw if it is installed. So you can ignore the red fatal error in CMD from this, the ignore clause keeps the code running, but still prints.                      
+                                              
+  # - name: "Open Kubernetes-specific ports"
+  #   firewalld: 
+  #     port: "{{ item }}"
+  #     permenant: true
+  #     state: enabled
+  #   loop:
+  #     - 6443/tcp       # Kubernetes API server
+  #     - 2379-2380/tcp  # etcd server vlient API
+  #     - 10250/tcp      # kublet API
+  #   ignore_errors: yes

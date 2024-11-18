@@ -1,7 +1,7 @@
 ---
-- name: Wait for VMs to initialize
-  ansible.builtin.pause:
-    seconds: 120
+# - name: Wait for VMs to initialize
+#   ansible.builtin.pause:
+#     seconds: 120
 
 - name: Retrieve information about all servers from OpenStack
   openstack.cloud.server_info:
@@ -27,13 +27,54 @@
       {{ ip }}
       {% endfor %}
 
-- name: Append IPs to Inventory file
+- name: Append all CloudVM IPs to Inventory file
   lineinfile:
     path: "{{ inventory_file }}"
     line: "{{ item }}"
     create: yes
     insertafter: EOF
   loop: "{{ ip_content.splitlines() }}"
+
+
+# # master IP additions ----
+
+# - name: add new line + worker variable tag to inventory EOF
+#   lineinfile:
+#     path: "{{ inventory_file }}"
+#     line: |
+      
+#       [masterVM]
+#     insertafter: EOF
+#     state: present
+
+# - name: Append masterIP IPs to Inventory file
+#   lineinfile:
+#     path: "{{ inventory_file }}"
+#     line: "{{ vm_private_ips[0] }}" 
+#     create: yes
+#     insertafter: EOF
+
+
+
+# # worker IP additions ----
+
+# - name: add new line + worker variable tag to inventory EOF
+#   lineinfile:
+#     path: "{{ inventory_file }}"
+#     line: |
+      
+#       [workerVMs]
+#     insertafter: EOF
+#     state: present
+
+# - name: Append masterIP IPs to Inventory file
+#   lineinfile:
+#     path: "{{ inventory_file }}"
+#     line: "{{ item }}"
+#     create: yes
+#     insertafter: EOF
+#   loop: "{{ ip_content.splitlines()[1:] }}"
+
 
 - name: Refresh inventory to ensure new instances exist in inventory
   ansible.builtin.meta: refresh_inventory

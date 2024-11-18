@@ -9,3 +9,53 @@
     name: docker
     state: started
     enabled: yes
+
+- name: Check if /etc/containerd directory exists
+  ansible.builtin.stat:
+    path: /etc/containerd
+  register: containerd_dir
+
+- name: Create /etc/containerd directory if it does not exist
+  ansible.builtin.file:
+    path: /etc/containerd
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+  when: not containerd_dir.stat.exists
+
+# - name: Ensure Docker daemon configuration for Kubernetes compatibility
+#   copy:
+#     dest: /etc/docker/daemon.json
+#     content: |
+#       {
+#         "exec-opts": ["native.cgroupdriver=systemd"],
+#         "log-driver": "json-file",
+#         "log-opts": {
+#           "max-size": "100m"
+#         },
+#         "storage-driver": "overlay2"
+#       }
+#   notify: restart docker
+
+- name: Create /etc/containerd/config.toml
+  copy:
+    dest: /etc/containerd/config.toml
+    content: |
+      [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc.options]
+        SystemdCgroup = true
+      [plugins."io.containerd.grpc.v1.cri".registry.mirrors."docker.io"]
+        endpoint = ["https://registry-1.docker.io"]
+      [plugins."io.containerd.grpc.v1.cri".sandbox_image]
+        pause = "k8s.gcr.io/pause:3.10"
+  notify: restart containerd
+
+- name: Create /etc/docker/daemon.json if using private registry
+  copy:
+    dest: /etc/docker/daemon.json
+    content: |
+      {
+        "insecure-registries" : ["my.private.registry:5000"],
+        "exec-opts": ["native.cgroupdriver=systemd"]
+      }
+  notify: restart docker

@@ -1,0 +1,54 @@
+---
+- name: Disable swap temporarily
+  command: swapoff -a
+  register: swapoff_result
+  ignore_errors: true
+  changed_when: "'swapon' not in swapoff_result.stdout"
+
+- name: Ensure swap is disabled in /etc/fstab
+  ansible.builtin.lineinfile:
+    path: /etc/fstab
+    regexp: '(^.*swap.*$)'
+    state: absent
+  register: fstab_edit
+  notify:
+    - Disable swap permanently
+
+
+# - name: Install Kubernetes key
+#   apt_key:
+#     url: https://pkgs.k8s.io/core:/stable:/v1.28/deb/Release.key #old: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+#     state: present
+
+# - name: Add Kubernetes GPG key to keyring
+#   ansible.builtin.command: |
+#     curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.28/deb/Release.key | sudo tee /usr/share/keyrings/kubernetes-archive-keyring.gpg > /dev/null
+
+- name: Download Kubernetes GPG key
+  ansible.builtin.get_url:
+    url: https://pkgs.k8s.io/core:/stable:/v1.28/deb/Release.key
+    dest: /etc/apt/keyrings/kubernetes-archive-keyring.asc            #this was originally a .gpg file instead of .asc, but .gpg would NOT WORK, kept getting a "public key repository don't exist"
+    mode: '0644'                                                      # kind of error. Managed to find a very small forum somewhere where somebody suggested using .asc file extension instead and that 
+                                                                      # just worked. I couldn't tell u why, kubernetes website says to use .gpg but here we are. There is another reference to this file 
+                                                                      # below so If for some reason I need to switch back to trying gpg, make sure u switch the lower reference as well (litterally 2nd task right below this) 
+- name: Update apt cache
+  ansible.builtin.apt:
+    update_cache: yes
+
+- name: Add Kubernetes apt repository
+  apt_repository:
+    repo: "deb [signed-by=/etc/apt/keyrings/kubernetes-archive-keyring.asc] https://pkgs.k8s.io/core:/stable:/v1.28/deb/ /" # old:' deb http://apt.kubernetes.io/ kubernetes-xenial main'
+    state: present
+
+- name: Update apt cache
+  ansible.builtin.apt:
+    update_cache: yes
+
+- name: Install Kubernetes packages
+  apt:
+    name:
+      - kubelet
+      - kubeadm
+      - kubectl
+    state: present
+    update_cache: yes

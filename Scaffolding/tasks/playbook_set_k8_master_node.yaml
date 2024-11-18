@@ -1,0 +1,37 @@
+--- 
+
+- name: Initialize the Kubernetes cluster on Master node
+  shell: kubeadm init --apiserver-advertise-address={{ ansible_host }} --pod-network-cidr=10.244.0.0/16
+  when: inventory_hostname == kubernetes_master
+
+
+- name: Initialize the Kubernetes control-plane (master)
+  command: kubeadm init --pod-network-cidr=10.244.0.0/16
+  register: kubeadm_output
+
+# ^^ these were old and may not be necessary
+
+- name: Create kube config directory for non-root user
+  become_user: "{{ ansible_user | default('your-username') }}"
+  file:
+    path: ~/.kube
+    state: directory
+    mode: '0755'
+
+- name: Copy admin kubeconfig to user .kube directory
+  command: cp /etc/kubernetes/admin.conf ~/.kube/config
+  become_user: "{{ ansible_user | default('your-username') }}"
+  when: kubeadm_output.changed
+
+- name: Set ownership for .kube/config
+  file:
+    path: ~/.kube/config
+    owner: "{{ ansible_user | default('your-username') }}"
+    group: "{{ ansible_user | default('your-username') }}"
+    mode: '0644'
+  become_user: "{{ ansible_user | default('your-username') }}"
+  when: kubeadm_output.changed
+
+- name: Display join command
+  debug:
+    msg: "{{ kubeadm_output.stdout_lines | select('search', 'kubeadm join') | list }}"

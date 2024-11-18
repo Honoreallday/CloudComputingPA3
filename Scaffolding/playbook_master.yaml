@@ -115,6 +115,16 @@
   tasks:    # the task to be performed
   - import_tasks: tasks/playbook_install_docker.yaml
 
+  handlers:
+  - name: restart containerd
+    systemd:
+      name: containerd
+      state: restarted
+  - name: restart docker
+    systemd:
+      name: docker
+      state: restarted
+
 #####################################################
 ### Play 6: Download and Install Kafka on our Cloud VMs
 #
@@ -173,5 +183,50 @@
   tasks:    # the task to be performed
   - import_tasks: tasks/playbook_set_firewalld_rules.yaml
 
+
+#####################################################
+### Play 8: Download and Install Kubernetes + packages
+#####################################################
+
+- name: "Play 8 - Install Kubernetes on Cloud VMs"
+  hosts: CloudVMs   # specified in the Inventory file
+  remote_user: "{{ cloud_user }}" # since this play operates on the cloud
+                                  # VMs, the user on those VMs is the
+                                  # cloud_user variable
+  become: true  # we set it here instead of doing per task unless
+                # there is a need to use non-sudo for any subtask
+  gather_facts: false
+  collections:
+  - ansible-base
+  - community.general
+
+  tasks:    # the task to be performed
+  - import_tasks: tasks/playbook_install_kub8_packages.yaml
+
+  
+  handlers:
+  - name: Disable swap permanently
+    command: swapoff -a
+
+####################################################
+## Play 9: Set Kubernetes Master VM
+####################################################
+
+- name: "Play 9 - Set Kubernetes master VM"
+  hosts: master_ip   # specified in the Inventory file
+  remote_user: "{{ cloud_user }}" # since this play operates on the cloud
+                                  # VMs, the user on those VMs is the
+                                  # cloud_user variable
+  become: true  # we set it here instead of doing per task unless
+                # there is a need to use non-sudo for any subtask
+  gather_facts: false
+  collections:
+  - ansible-base
+  - community.general
+
+  tasks:    # the task to be performed
+  - import_tasks: tasks/playbook_set_k8_master_node.yaml
+
 ...
+
 
