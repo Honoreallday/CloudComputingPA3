@@ -213,7 +213,7 @@
 ####################################################
 
 - name: "Play 9 - Set Kubernetes master VM"
-  hosts: master_ip   # specified in the Inventory file
+  hosts: "{{ groups['CloudVMs'][0] }}"   # specified in the Inventory file
   remote_user: "{{ cloud_user }}" # since this play operates on the cloud
                                   # VMs, the user on those VMs is the
                                   # cloud_user variable
