@@ -3,11 +3,11 @@ import json
 import os
 from pymongo import MongoClient
 
-mongo_client = MongoClient('mongodb://192.168.5.229:27017/')
+mongo_client = MongoClient('mongodb://192.168.5.202:27017/')
 db = mongo_client['images']
 collection = db['image-data']
 
-kafka_broker_ip = "192.168.5.45"
+kafka_broker_ip = "192.168.5.108"
 topic_name = 'image-topic'
 
 consumer = KafkaConsumer(
