@@ -1,6 +1,6 @@
 ---
 - name: Disable swap temporarily
-  command: swapoff -a
+  command: sudo swapoff -a
   register: swapoff_result
   ignore_errors: true
   changed_when: "'swapon' not in swapoff_result.stdout"

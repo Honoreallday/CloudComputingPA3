@@ -1,4 +1,11 @@
 ---
+- name: "Wait for VM to be reachable via SSH"
+  wait_for_connection:
+    timeout: 300
+    sleep: 10
+  register: wait_result
+  until: wait_result is succeeded
+
 - name: "Update apt cache"
   apt:
     update_cache: yes
@@ -11,3 +18,7 @@
     - python3
     - python3-pip
     - openjdk-8-jdk
+    - apt-transport-https
+    - ca-certificates
+    - curl
+    - gpg
