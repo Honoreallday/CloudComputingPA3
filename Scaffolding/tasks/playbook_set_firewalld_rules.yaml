@@ -9,7 +9,7 @@
     - 22/tcp    # SSH port
     - 27017/tcp # MongoDB port
     - 6443/tcp       # Kubernetes API server
-    - 2379:2381/tcp  # etcd server vlient API
+    - 2379-2381/tcp  # etcd server vlient API
     - 10250/tcp      # kublet API
     - 443/tcp
     - 10256/tcp
@@ -20,7 +20,7 @@
     - 8285/udp
     - 8472/udp
     - 5000/tcp
-    - 3000:30100/tcp
+    - 3000-30100/tcp
   ignore_errors: yes
  
 - name: Stop and disable firewalld
