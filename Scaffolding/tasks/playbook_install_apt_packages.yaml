@@ -22,3 +22,6 @@
     - ca-certificates
     - curl
     - gpg
+    - net-tools
+    - etcd
+    - ufw
