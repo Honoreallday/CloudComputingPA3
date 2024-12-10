@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: iot-producer-deployment
+  labels:
+    app: iot-producer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: iot-producer
+  template:
+    metadata:
+      labels:
+        app: iot-producer
+    spec:
+      containers:
+        - name: iot-producer
+          image: team20-vm-4:5000/iot_producer:latest
+          ports:
+            - containerPort: 5000
