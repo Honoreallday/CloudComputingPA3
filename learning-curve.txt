@@ -1,0 +1,10 @@
+This learning adventure, in a way, was pretty intense and practically set our minds back to figuring out how Docker
+teams up with Kafka in an interconnected setup. At the beginning, well, we kind of hit a roadblock with Kafka's producer
+and consumer scripts since it turned out that the essential commands were nowhere to be found inside the container.
+So that really pushed us to take a deeper look into what was happening within its file system to understand why those commands
+just weren’t there. You know, it got slightly tricky because this particular container used Alpine Linux instead of our usual
+stuff like apt-get for package management. Therefore, we ended up depending on things like kafkacat which meant getting accustomed
+to an unfamiliar setting and toolkit as quickly as possible.
+
+Unfortunately, the amount of issues kept piling up and whenever we solved one issue, 2 more arose. I think we learned a lot about how to 
+get apache working with Kafka and the rest of our containers in theory, but we struggled to implement it in practice.
